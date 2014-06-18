@@ -5,5 +5,6 @@
 "Gauge1" 0800 0021 108 F0
 "Meter0" 7400 002B 44 F0
 "Angularmeter0" FA00 0067 38 160
-"Winbutton0" 0200 00B9 24 44
+"Winbutton0" 0200 00B9 28 64
 "4Dbutton1" 4400 00B9 2C 98
+"Slider0" 8600 00B9 10 28

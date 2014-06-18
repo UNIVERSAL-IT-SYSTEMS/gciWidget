@@ -16,6 +16,7 @@ gciWidget *knob;
 gciWidget *gauge0;
 gciWidget *gauge1;
 gciWidget *button;
+gciWidget *slidebar;
 
 boolean switchState = false;
 int knobValue = 0;
@@ -47,15 +48,33 @@ void setup() {
 	gauge1 = widgets.getWidgetByName("Gauge1");
 	button = widgets.getWidgetByName("Winbutton0");
 	slider = widgets.getWidgetByName("4Dbutton1");
+	slidebar = widgets.getWidgetByName("Slider0");
 
 	sw->attachEvent(TAP, switchPress);
 	slider->attachEvent(TAP, switchPress);
 	
 	knob->attachEvent(DRAG, turnKnob);
 
+	slidebar->attachEvent(DRAG, dragSlider);
+
 	button->attachEvent(PRESS, btnPress);
 	button->attachEvent(RELEASE, btnRelease);
 	button->attachEvent(TAP, btnTap);
+}
+
+void dragSlider(gciWidget *w) {
+	knobValue = (w->getEventX()-5) * 100 / 160;
+	if (knobValue < 0) knobValue = 0;
+	if (knobValue > 100) knobValue = 100;
+	knob->setValue(knobValue);
+	slidebar->setValue(knobValue);
+	if (switchState) {
+		meter->setValue(knobValue);
+		gauge0->setValue(knobValue);
+	} else {
+		angular->setValue(knobValue);
+		gauge1->setValue(knobValue);
+	}
 }
 
 void btnPress(gciWidget *w) {
@@ -70,6 +89,7 @@ void btnTap(gciWidget *w) {
 	knobValue = 0;
 	switchState = false;
 	sw->setValue(0);
+	slidebar->setValue(0);
 	led->setValue(0);
 	knob->setValue(0);
 	meter->setValue(0);
@@ -100,6 +120,7 @@ void turnKnob(gciWidget *w) {
 	if (knobValue < 0) knobValue = 0;
 	
 	knob->setValue(knobValue);
+	slidebar->setValue(knobValue);
 	if (switchState) {
 		meter->setValue(knobValue);
 		gauge0->setValue(knobValue);
