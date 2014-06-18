@@ -40,7 +40,7 @@ void setup() {
 	}
 	widgets.init();
 	meter = widgets.getWidgetByName("Meter0");
-	angular = widgets.getWidgetByName("Angularmeter0");
+	angular = widgets.getWidgetByName("Coolgauge0");
 	sw = widgets.getWidgetByName("4Dbutton0");
 	led = widgets.getWidgetByName("Led0");
 	knob = widgets.getWidgetByName("Knob0");
