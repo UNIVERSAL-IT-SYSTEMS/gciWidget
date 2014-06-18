@@ -10,6 +10,7 @@ gciWidgetSet widgets(tft, ts, "/TEST~DTN");
 gciWidget *meter;
 gciWidget *angular;
 gciWidget *sw;
+gciWidget *slider;
 gciWidget *led;
 gciWidget *knob;
 gciWidget *gauge0;
@@ -45,8 +46,11 @@ void setup() {
 	gauge0 = widgets.getWidgetByName("Gauge0");
 	gauge1 = widgets.getWidgetByName("Gauge1");
 	button = widgets.getWidgetByName("Winbutton0");
+	slider = widgets.getWidgetByName("4Dbutton1");
 
 	sw->attachEvent(TAP, switchPress);
+	slider->attachEvent(TAP, switchPress);
+	
 	knob->attachEvent(DRAG, turnKnob);
 
 	button->attachEvent(PRESS, btnPress);
@@ -72,12 +76,14 @@ void btnTap(gciWidget *w) {
 	angular->setValue(0);
 	gauge0->setValue(0);
 	gauge1->setValue(0);
+	slider->setValue(0);
 }
 
 
 void switchPress(gciWidget *w) {
 	switchState = !switchState;
-	w->setValue(switchState ? 1 : 0);
+	sw->setValue(switchState ? 1 : 0);
+	slider->setValue(switchState ? 1 : 0);
 	led->setValue(switchState ? 1 : 0);
 }
 
