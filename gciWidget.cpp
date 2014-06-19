@@ -381,31 +381,28 @@ gciWidget *gciWidgetSet::getWidgetByName(const char *name) {
             return scan->widget;
         }
     }
+    _dev->print("Widget not found: ");
+    _dev->println(name);
+    while(1);
     return NULL;
 }
 
-void gciWidgetSet::setPage(const char *name, int page) {
-    if (page >= 32) {
-        return;
-    }
-    struct widgetList *scan;
-    for (scan = _widgets; scan; scan = scan->next) {
-        if (!strcmp(name, scan->name)) {
-            scan->pages |= (1<<page);
-        }
-    }
+gciWidget *gciWidgetSet::setPage(const char *name, int page) {
+    struct gciWidget *w = getWidgetByName(name);
+    return setPage(w, page);
 }
 
-void gciWidgetSet::setPage(gciWidget *w, int page) {
-    if (page >= 32) {
-        return;
-    }
+gciWidget *gciWidgetSet::setPage(gciWidget *w, int page) {
     struct widgetList *scan;
     for (scan = _widgets; scan; scan = scan->next) {
         if (scan->widget == w) {
-            scan->pages |= (1<<page);
+            if (page < 32) {
+                scan->pages |= (1<<page);
+            }
+            return scan->widget;
         }
     }
+    return NULL;
 }
 
 void gciWidgetSet::unsetPage(const char *name, int page) {

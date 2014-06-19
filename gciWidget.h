@@ -103,8 +103,8 @@ class gciWidgetSet {
         boolean init();
         void render();
         gciWidget *getWidgetByName(const char *name);
-        void setPage(const char *name, int page);
-        void setPage(gciWidget *w, int page);
+        gciWidget *setPage(const char *name, int page);
+        gciWidget *setPage(gciWidget *w, int page);
         void unsetPage(const char *name, int page);
         void unsetPage(gciWidget *w, int page);
         void selectPage(int page);
