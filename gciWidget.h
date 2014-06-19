@@ -63,6 +63,8 @@ class gciWidget {
         uint32_t getValue();
         void dumpInfo();
 
+        void invalidate();
+
         void attachEvent(int event, void (*func)(gciWidget *));
         int getEventDX();
         int getEventDY();
@@ -93,6 +95,7 @@ class gciWidgetSet {
         boolean init();
         void render();
         gciWidget *getWidgetByName(const char *name);
+        void invalidate();
 };
 
 #define IMG_BUFSZ 256

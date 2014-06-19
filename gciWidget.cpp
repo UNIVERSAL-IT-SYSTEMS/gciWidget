@@ -4,6 +4,10 @@ static inline uint16_t swaple(uint16_t be) {
 	return ((be & 0xFF00) >> 8) | ((be & 0x00FF) << 8);
 }
 
+void gciWidget::invalidate() {
+    _paint = true;
+}
+
 void gciWidget::dumpInfo() {
     _dev->print("Offset: ");
     _dev->println(_offset, HEX);
@@ -310,6 +314,12 @@ void gciWidgetSet::render() {
     struct widgetList *scan;
     for (scan = _widgets; scan; scan = scan->next)
         scan->widget->render();
+}
+
+void gciWidgetSet::invalidate() {
+    struct widgetList *scan;
+    for (scan = _widgets; scan; scan = scan->next)
+        scan->widget->invalidate();
 }
 
 gciWidget *gciWidgetSet::getWidgetByName(const char *name) {
