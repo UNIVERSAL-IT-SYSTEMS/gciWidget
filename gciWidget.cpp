@@ -1,5 +1,23 @@
 #include <gciWidget.h>
 
+static TFT *_globalTFTDevice;
+
+static void gciNewHandler() {
+    _globalTFTDevice->fillScreen(Color::Black);
+    _globalTFTDevice->setTextColor(Color::Red, Color::Black);
+    _globalTFTDevice->setCursor(0, 0);
+    _globalTFTDevice->setFont(Fonts::Ubuntu16);
+    _globalTFTDevice->println();
+    _globalTFTDevice->println("Error allocating object");
+    _globalTFTDevice->println();
+    _globalTFTDevice->println("You need to increase the");
+    _globalTFTDevice->println("heap space");
+    _globalTFTDevice->println();
+    _globalTFTDevice->println("See:");
+    _globalTFTDevice->println("http://uecide.org/ckheap");
+    while(1);
+}
+
 static inline uint16_t swaple(uint16_t be) {
 	return ((be & 0xFF00) >> 8) | ((be & 0x00FF) << 8);
 }
@@ -35,6 +53,7 @@ void gciWidget::dumpInfo() {
 
 gciWidget::gciWidget(TFT &dev, Touch &ts, File &file, uint32_t offset, int x, int y) {
 	_dev = &dev;
+    _globalTFTDevice = _dev;
     _ts = &ts;
 	_file = &file;
 	_offset = offset;
@@ -60,6 +79,7 @@ gciWidget::gciWidget(TFT &dev, Touch &ts, File &file, uint32_t offset, int x, in
 
 gciWidget::gciWidget(TFT *dev, Touch *ts, File *file, uint32_t offset, int x, int y) {
 	_dev = dev;
+    _globalTFTDevice = _dev;
     _ts = ts;
 	_file = file;
 	_offset = offset;
@@ -282,6 +302,8 @@ boolean gciWidgetSet::init() {
     int x = NULL;
     int y = NULL;
 
+    std::set_new_handler(gciNewHandler);
+
     while (_datfile.available()) {
         char c = _datfile.read();
         if (c == '\r') continue;
@@ -417,3 +439,4 @@ void gciWidgetSet::selectPage(int page) {
 void gciWidgetSet::setBackground(uint16_t c) {
     _background = c;
 }
+
