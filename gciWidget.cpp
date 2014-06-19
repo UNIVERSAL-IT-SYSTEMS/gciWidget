@@ -8,6 +8,14 @@ void gciWidget::invalidate() {
     _paint = true;
 }
 
+void gciWidget::setUser(uint32_t u) {
+    _user = u;
+}
+
+uint32_t gciWidget::getUser() {
+    return _user;
+}
+
 void gciWidget::dumpInfo() {
     _dev->print("Offset: ");
     _dev->println(_offset, HEX);

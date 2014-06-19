@@ -36,6 +36,7 @@ class gciWidget {
         boolean _enabled;
         boolean _visible;
         boolean _active;
+        uint32_t _user;
 
         int _sx;
         int _sy;
@@ -73,6 +74,9 @@ class gciWidget {
 
         int getWidth();
         int getHeight();
+
+        void setUser(uint32_t v);
+        uint32_t getUser();
 };
 
 struct widgetList {
