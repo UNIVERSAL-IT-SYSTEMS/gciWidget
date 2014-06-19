@@ -78,6 +78,7 @@ class gciWidget {
 struct widgetList {
     class gciWidget *widget;
     char *name;
+    uint32_t pages;
     struct widgetList *next;
 };
 
@@ -89,12 +90,21 @@ class gciWidgetSet {
         Touch *_ts;
         struct widgetList *_widgets;
         const char *_basename;
+        int _selectedPage;
+        int _requestedPage;
+        uint16_t _background;
         
     public:
         gciWidgetSet(TFT &dev, Touch &ts, const char *basename);
         boolean init();
         void render();
         gciWidget *getWidgetByName(const char *name);
+        void setPage(const char *name, int page);
+        void setPage(gciWidget *w, int page);
+        void unsetPage(const char *name, int page);
+        void unsetPage(gciWidget *w, int page);
+        void selectPage(int page);
+        void setBackground(uint16_t c);
         void invalidate();
 };
 

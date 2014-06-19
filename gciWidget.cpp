@@ -251,6 +251,9 @@ gciWidgetSet::gciWidgetSet(TFT &dev, Touch &ts, const char *basename) {
     _ts = &ts;
     _basename = basename;
     _widgets = NULL;
+    _selectedPage = 0;
+    _requestedPage = 1;
+    _background = 0;
 }
 
 boolean gciWidgetSet::init() {
@@ -288,9 +291,19 @@ boolean gciWidgetSet::init() {
             uint32_t s = (hi << 16) | lo;
 
             struct widgetList *wl = (struct widgetList *)malloc(sizeof(struct widgetList));
+
+            if (wl == NULL) {
+                _dev->println("Fatal error allocating widget list!");
+                while (1);
+            }
             wl->name = strdup(name);
             wl->next = NULL;
+            wl->pages = 1;
             wl->widget = new gciWidget(_dev, _ts, &_gcifile, s, x, y);
+            if (wl->widget == NULL) {
+                _dev->println("Fatal error allocating widget object!");
+                while(1);
+            }
 
             if (_widgets == NULL) {
                 _widgets = wl;
@@ -299,6 +312,7 @@ boolean gciWidgetSet::init() {
                 for (scan = _widgets; scan->next; scan = scan->next);
                 scan->next = wl;
             }
+
             
             pos = 0;
             continue;
@@ -312,8 +326,16 @@ boolean gciWidgetSet::init() {
 
 void gciWidgetSet::render() {
     struct widgetList *scan;
-    for (scan = _widgets; scan; scan = scan->next)
-        scan->widget->render();
+    if (_selectedPage != _requestedPage) {
+        _selectedPage = _requestedPage;
+        _dev->fillScreen(_background);
+        invalidate();
+    }
+    for (scan = _widgets; scan; scan = scan->next) { 
+        if (scan->pages & (1<<_selectedPage)) {
+            scan->widget->render();
+        }
+    }
 }
 
 void gciWidgetSet::invalidate() {
@@ -330,4 +352,60 @@ gciWidget *gciWidgetSet::getWidgetByName(const char *name) {
         }
     }
     return NULL;
+}
+
+void gciWidgetSet::setPage(const char *name, int page) {
+    if (page >= 32) {
+        return;
+    }
+    struct widgetList *scan;
+    for (scan = _widgets; scan; scan = scan->next) {
+        if (!strcmp(name, scan->name)) {
+            scan->pages |= (1<<page);
+        }
+    }
+}
+
+void gciWidgetSet::setPage(gciWidget *w, int page) {
+    if (page >= 32) {
+        return;
+    }
+    struct widgetList *scan;
+    for (scan = _widgets; scan; scan = scan->next) {
+        if (scan->widget == w) {
+            scan->pages |= (1<<page);
+        }
+    }
+}
+
+void gciWidgetSet::unsetPage(const char *name, int page) {
+    if (page >= 32) {
+        return;
+    }
+    struct widgetList *scan;
+    for (scan = _widgets; scan; scan = scan->next) {
+        if (!strcmp(name, scan->name)) {
+            scan->pages &= ~(1<<page);
+        }
+    }
+}
+
+void gciWidgetSet::unsetPage(gciWidget *w, int page) {
+    if (page >= 32) {
+        return;
+    }
+    struct widgetList *scan;
+    for (scan = _widgets; scan; scan = scan->next) {
+        if (scan->widget == w) {
+            scan->pages &= ~(1<<page);
+        }
+    }
+}
+
+void gciWidgetSet::selectPage(int page) {
+    _requestedPage = page;
+}
+
+void gciWidgetSet::setBackground(uint16_t c) {
+    _background = c;
 }
