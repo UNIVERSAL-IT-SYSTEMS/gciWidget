@@ -75,8 +75,8 @@ class gciWidget {
         int getWidth();
         int getHeight();
 
-        void setUser(uint32_t v);
-        uint32_t getUser();
+        void setUserValue(uint32_t v);
+        uint32_t getUserValue();
 };
 
 struct widgetList {

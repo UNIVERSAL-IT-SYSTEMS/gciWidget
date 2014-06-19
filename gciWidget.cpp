@@ -26,11 +26,11 @@ void gciWidget::invalidate() {
     _paint = true;
 }
 
-void gciWidget::setUser(uint32_t u) {
+void gciWidget::setUserValue(uint32_t u) {
     _user = u;
 }
 
-uint32_t gciWidget::getUser() {
+uint32_t gciWidget::getUserValue() {
     return _user;
 }
 
