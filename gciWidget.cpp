@@ -178,6 +178,8 @@ void gciWidget::handleTouch() {
         _st = millis();
         _sx = _ts->x() - _x;
         _sy = _ts->y() - _y;
+        _rt = millis();
+        _rp = 0;
 
         if (_press != NULL) {
             _rx = _sx;
@@ -226,14 +228,62 @@ void gciWidget::handleTouch() {
     if ((pressed && inBounds) && _active) {
         _ex = _ts->x() - _x;
         _ey = _ts->y() - _y;
-        if (_drag != NULL) {
-            _rx = _ex;
-            _ry = _ey;
-            _drag(this);
+        if (_sx != _ex || _sy != _ey) {
+            if (_drag != NULL) {
+                _rx = _ex;
+                _ry = _ey;
+                _drag(this);
+            }
         }
+        // Key repeat
+
+        if (_rp == 0) {
+            _rt = millis();
+            _rp = 1;
+            if (_repeat != NULL) {
+                _rx = _ex;
+                _ry = _ey;
+                _repeat(this);
+            }
+        } else if (_rp == 1) {
+            if (millis() - _rt >= 1000) {
+                _rt = millis();
+                _rp = 2;
+                _rc = 0;
+                if (_repeat != NULL) {
+                    _rx = _ex;
+                    _ry = _ey;
+                    _repeat(this);
+                }
+            }
+        } else if (_rp == 2) {
+            if (millis() - _rt >= 200) {
+                _rt = millis();
+                if (_repeat != NULL) {
+                    _rx = _ex;
+                    _ry = _ey;
+                    _repeat(this);
+                }
+                _rc++;
+                if (_rc == 10) {
+                    _rp = 3;
+                }
+            }
+        } else if (_rp == 3) {
+            if (millis() - _rt >= 50) {
+                _rt = millis();
+                if (_repeat != NULL) {
+                    _rx = _ex;
+                    _ry = _ey;
+                    _repeat(this);
+                }
+            }
+        }
+
         _sx = _ex;
         _sy = _ey;
     }
+
 }
 
 uint32_t gciWidget::getFrames() {
@@ -268,6 +318,9 @@ void gciWidget::attachEvent(int e, void (*func)(gciWidget *)) {
             break;
         case TAP:
             _tap = func;
+            break;
+        case REPEAT:
+            _repeat = func;
             break;
     }
 }

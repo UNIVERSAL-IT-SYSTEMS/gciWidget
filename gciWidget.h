@@ -10,6 +10,7 @@
 #define RELEASE 2
 #define DRAG 3
 #define TAP 4
+#define REPEAT 5
 
 struct gcihdr {
 	uint16_t width;
@@ -41,16 +42,20 @@ class gciWidget {
         int _sx;
         int _sy;
         int _ex;
-        int _ey;
-        int _st;
-        int _et;
         int _rx;
         int _ry;
+        int _ey;
+        uint32_t _st;
+        uint32_t _et;
+        uint32_t _rt;
+        int _rp;
+        int _rc;
 
         void (*_press)(gciWidget *);
         void (*_release)(gciWidget *);
         void (*_drag)(gciWidget *);
         void (*_tap)(gciWidget *);
+        void (*_repeat)(gciWidget *);
 
         void handleTouch();
 
