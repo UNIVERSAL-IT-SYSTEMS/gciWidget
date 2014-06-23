@@ -332,8 +332,8 @@ gciWidgetSet::gciWidgetSet(TFT &dev, Touch &ts, const char *basename) {
     _ts = &ts;
     _basename = basename;
     _widgets = NULL;
-    _selectedPage = 0;
-    _requestedPage = 1;
+    _selectedPage = -1;
+    _requestedPage = 0;
     _background = 0;
 }
 
@@ -381,7 +381,7 @@ boolean gciWidgetSet::init() {
             }
             wl->name = strdup(name);
             wl->next = NULL;
-            wl->pages = 1;
+            wl->pages = 0;
             wl->widget = new gciWidget(_dev, _ts, &_gcifile, s, x, y);
             if (wl->widget == NULL) {
                 _dev->println("Fatal error allocating widget object!");
