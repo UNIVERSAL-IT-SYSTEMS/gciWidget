@@ -3,19 +3,7 @@
 static TFT *_globalTFTDevice;
 
 static void gciNewHandler() {
-    _globalTFTDevice->fillScreen(Color::Black);
-    _globalTFTDevice->setTextColor(Color::Red, Color::Black);
-    _globalTFTDevice->setCursor(0, 0);
-    _globalTFTDevice->setFont(Fonts::Ubuntu16);
-    _globalTFTDevice->println();
-    _globalTFTDevice->println("Error allocating object");
-    _globalTFTDevice->println();
-    _globalTFTDevice->println("You need to increase the");
-    _globalTFTDevice->println("heap space");
-    _globalTFTDevice->println();
-    _globalTFTDevice->println("See:");
-    _globalTFTDevice->println("http://uecide.org/ckheap");
-    while(1);
+    _globalTFTDevice->fatalError("UNABLE TO ALLOCATE OBJECT", "See: http://uecide.org/ckheap");
 }
 
 static inline uint16_t swaple(uint16_t be) {
@@ -376,16 +364,14 @@ boolean gciWidgetSet::init() {
             struct widgetList *wl = (struct widgetList *)malloc(sizeof(struct widgetList));
 
             if (wl == NULL) {
-                _dev->println("Fatal error allocating widget list!");
-                while (1);
+                _dev->fatalError("OUT OF MEMORY", "Unable to allocate widget list");
             }
             wl->name = strdup(name);
             wl->next = NULL;
             wl->pages = 0;
             wl->widget = new gciWidget(_dev, _ts, &_gcifile, s, x, y);
             if (wl->widget == NULL) {
-                _dev->println("Fatal error allocating widget object!");
-                while(1);
+                _dev->fatalError("OUT OF MEMORY", "Unable to allocate widget list");
             }
 
             if (_widgets == NULL) {
@@ -434,9 +420,7 @@ gciWidget *gciWidgetSet::getWidgetByName(const char *name) {
             return scan->widget;
         }
     }
-    _dev->print("Widget not found: ");
-    _dev->println(name);
-    while(1);
+    _dev->fatalError("WIDGET NOT FOUND", name);
     return NULL;
 }
 
