@@ -343,7 +343,7 @@ boolean gciWidgetSet::init() {
     int x = NULL;
     int y = NULL;
 
-    std::set_new_handler(gciNewHandler);
+//    std::set_new_handler(gciNewHandler);
 
     while (_datfile.available()) {
         char c = _datfile.read();
