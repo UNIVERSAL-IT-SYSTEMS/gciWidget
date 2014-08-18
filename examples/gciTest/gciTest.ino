@@ -1,7 +1,7 @@
 #include <TFT.h>
 #include <SD.h>
 #include <gciWidget.h>
-
+#pragma parameter extra.flags=-Wl,--defsym,_min_heap_size=0x8000
 PICadillo35t tft;
 AnalogTouch ts(LCD_XL, LCD_XR, LCD_YU, LCD_YD, 320, 480);
 
@@ -50,6 +50,19 @@ void setup() {
 	slider = widgets.getWidgetByName("4Dbutton1");
 	slidebar = widgets.getWidgetByName("Slider0");
 
+	widgets.setPage(meter, 1);
+	widgets.setPage(angular, 1);
+	widgets.setPage(sw, 1);
+	widgets.setPage(led, 1);
+	widgets.setPage(knob, 1);
+	widgets.setPage(gauge0, 1);
+	widgets.setPage(gauge1, 1);
+	widgets.setPage(button, 1);
+	widgets.setPage(slider, 1);
+	widgets.setPage(slidebar, 1);
+
+	widgets.selectPage(1);
+	
 	sw->attachEvent(TAP, switchPress);
 	slider->attachEvent(TAP, switchPress);
 	
@@ -60,6 +73,7 @@ void setup() {
 	button->attachEvent(PRESS, btnPress);
 	button->attachEvent(RELEASE, btnRelease);
 	button->attachEvent(TAP, btnTap);
+
 }
 
 void dragSlider(gciWidget *w) {
