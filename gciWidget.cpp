@@ -1,6 +1,6 @@
 #include <gciWidget.h>
 
-static TFT *_globalTFTDevice;
+TFT *_globalTFTDevice;
 
 static void gciNewHandler() {
     _globalTFTDevice->fatalError("UNABLE TO ALLOCATE OBJECT", "See: http://uecide.org/ckheap");
@@ -369,7 +369,11 @@ boolean gciWidgetSet::init() {
             wl->name = strdup(name);
             wl->next = NULL;
             wl->pages = 0;
-            wl->widget = new gciWidget(_dev, _ts, &_gcifile, s, x, y);
+            if (!strncmp(name, "Statictext", 10)) {
+                wl->widget = new staticText(_dev, _ts, &_gcifile, s, x, y);
+            } else {
+                wl->widget = new gciWidget(_dev, _ts, &_gcifile, s, x, y);
+            }
             if (wl->widget == NULL) {
                 _dev->fatalError("OUT OF MEMORY", "Unable to allocate widget list");
             }

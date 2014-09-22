@@ -12,6 +12,8 @@
 #define TAP 4
 #define REPEAT 5
 
+extern TFT *_globalTFTDevice;
+
 struct gcihdr {
 	uint16_t width;
 	uint16_t height;
@@ -21,7 +23,7 @@ struct gcihdr {
 } __attribute__((packed));
 
 class gciWidget {
-	private:
+	public:
 		TFT *_dev;
         Touch *_ts;
         File *_file;
@@ -59,11 +61,10 @@ class gciWidget {
 
         void handleTouch();
 
-	public:
 		gciWidget(TFT &dev, Touch &ts, File &file, uint32_t offset, int x, int y);
 		gciWidget(TFT *dev, Touch *ts, File *file, uint32_t offset, int x, int y);
 		void render();
-		void render(int x, int y);
+		virtual void render(int x, int y);
 		uint32_t getFrames();
         void setValue(uint32_t val);
         uint32_t getValue();
@@ -118,5 +119,7 @@ class gciWidgetSet {
 };
 
 #define IMG_BUFSZ 256
+
+#include <staticText.h>
 
 #endif
